@@ -46,8 +46,9 @@ def sync_clients(db: Session):
 def sync_products(db: Session):
     print("\nIniciando sincronización de Productos...")
     # 1. Obtenemos productos expandiendo variantes y, dentro de ellas, precios y costos.
-    # Esta es la optimización clave: una sola consulta para toda la información.
-    products_list = bsale_client._get_all_pages("products.json", params={'expand': '[variants[pricelists,costs]]'})
+    # El parámetro 'expand' es sensible a mayúsculas. Usamos 'priceLists' (con 'L' mayúscula)
+    # para asegurar que la API devuelva la información de precios.
+    products_list = bsale_client._get_all_pages("products.json", params={'expand': '[variants.priceLists,variants.costs]'})
 
     if not products_list:
         print("No se encontraron productos para sincronizar.")
@@ -63,31 +64,42 @@ def sync_products(db: Session):
 
         # 2. Buscamos la PRIMERA variante activa (state: 0 en Bsale)
         for variant in variants:
-            # Procesamos solo variantes activas (state: 0 en Bsale).
-            if variant.get("state") != 0:
-                continue
-                continue  # Si no está activa, pasamos a la siguiente variante
 
-            # 3. Extraemos los datos comerciales directamente desde la variante expandida.
-            pricelists_data = variant.get("pricelists", {}) or {}
-            price_list_items = pricelists_data.get("items", [])
-            # Tomamos el precio de la primera lista de precios, con un valor por defecto.
-            net_price = price_list_items[0].get("netValue") if price_list_items else 0.0
+            # 3. Extraemos precios y costos de la estructura correcta devuelta por la API expandida.
+            # Los precios vienen en el nodo "priceLists" (notar la 'L' mayúscula).
+            # La estructura real con 'expand' es: variant -> priceLists -> items -> [0] -> price_list -> value
+            net_price = 0.0
+            price_lists_node = variant.get("priceLists")
+            if price_lists_node and price_lists_node.get("items"):
+                price_list_items = price_lists_node["items"]
+                if price_list_items:
+                    # Accedemos al primer item de la lista de precios
+                    first_price_item = price_list_items[0]
+                    # Dentro de ese item, accedemos al nodo 'price_list' y luego a 'value'
+                    if first_price_item and first_price_item.get("price_list"):
+                        net_price = first_price_item["price_list"].get("value") or 0.0
+
+            # El costo viene directamente en el nodo "costs" de la variante.
+            net_cost = (variant.get("costs", {}).get("netCost") if variant.get("costs") else 0.0) or 0.0
+
+            # ¡ALERTA DE INTEGRIDAD DE DATOS!
+            # Si el precio es 0 o negativo, es un problema en Bsale que debe ser revisado.
+            if net_price <= 0.0:
+                print(f"!!! ALERTA: Producto con precio CERO o negativo detectado en Bsale !!!")
+                print(f"    - Nombre Producto: '{p.get('name')}' (ID: {p.get('id')})")
+                print(f"    - Variante SKU: '{variant.get('code')}' (ID Variante: {variant.get('id')})")
 
             products_to_load.append({
                 "id_bsale": variant.get("id"), # Usamos el ID de la variante como PK
-                "nombre": p.get("name"), # Nombre del producto padre
-                "id_bsale": variant.get("id"),  # Usamos el ID de la variante como PK
                 "nombre": p.get("name"),  # Nombre del producto padre
                 "descripcion": p.get("description"),
-                "codigo_sku": variant.get("code"), # SKU desde la variante
                 "codigo_sku": variant.get("code"),  # SKU desde la variante
                 "codigo_barras": variant.get("barCode"),
                 "controla_stock": 1 if variant.get("track") else 0,
-                "precio_neto": net_price or 0.0,
-                "costo_neto": (variant.get("costs") or {}).get("netCost") or 0.0,
-                "estado": 1, # Si la variante tiene state 0, la guardamos como activa (1)
-                "estado": 1,  # Si la variante tiene state 0, la guardamos como activa (1)
+                "precio_neto": net_price,
+                "costo_neto": net_cost,
+                # Mapeamos el estado de Bsale (0=activo, 1=inactivo) a nuestro estado (1=activo, 0=inactivo)
+                "estado": 1 if variant.get("state") == 0 else 0,
             })
             break  # ¡Clave! Salimos del bucle de variantes una vez que encontramos y procesamos la primera activa.
 
