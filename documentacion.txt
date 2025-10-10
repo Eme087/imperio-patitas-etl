@@ -1,0 +1,152 @@
+Autenticación
+
+La autenticación es el primer y más importante paso. Bsale utiliza un token de acceso para autorizar las peticiones.
+
+¿Qué es?: Es una cadena de texto larga y única que te identifica.
+¿Cómo se obtiene?: Debes generar tu token desde el panel de administración de tu cuenta de Bsale, generalmente en una sección de "Acceso API" o "Integraciones".
+¿Cómo se usa?: El token debe ser enviado en los encabezados (headers) de cada petición HTTP que realices.
+
+El encabezado que debes usar es:
+Clave: access_token
+Valor: Tu token de acceso (ej: a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6)
+
+Si no incluyes este encabezado o el token es incorrecto, la API te devolverá un error 401 Unauthorized.
+
+URL Base y Endpoints
+
+Todas las llamadas a la API se hacen a una URL base, a la cual se le añade la ruta del recurso específico que quieres consultar.
+
+URL Base: https://api.bsale.cl/
+Versión de la API: La versión actual es la v1.
+Formato de Respuesta: Se debe especificar el formato .json al final de la ruta del recurso.
+
+Por lo tanto, la URL completa para acceder a un recurso se ve así:
+https://api.bsale.cl/v1/{recurso}.json
+
+Ejemplos de endpoints comunes:
+Productos: https://api.bsale.cl/v1/products.json
+Clientes: https://api.bsale.cl/v1/clients.json
+Documentos (Boletas/Facturas): https://api.bsale.cl/v1/documents.json
+Sucursales: https://api.bsale.cl/v1/offices.json
+
+Tipos de Peticiones (Métodos HTTP)
+
+La API de Bsale utiliza los verbos HTTP estándar para interactuar con los recursos:
+
+GET: Leer / Consultar. Se usa para obtener uno o varios recursos. Por ejemplo, obtener un listado de productos o los datos de un cliente específico.
+POST: Crear. Se usa para crear un nuevo recurso. Por ejemplo, registrar un nuevo cliente o generar un nuevo documento de venta.
+PUT: Actualizar. Se usa para modificar un recurso existente. Por ejemplo, cambiar el precio de un producto o actualizar los datos de un cliente.
+DELETE: Eliminar. Se usa para borrar un recurso. No todos los recursos se pueden eliminar.
+
+Parámetros y Filtros (Para Peticiones GET)
+
+Cuando consultas listas de recursos (GET), puedes personalizar los resultados usando parámetros en la URL (query parameters).
+
+Paginación:
+limit: Define cuántos resultados quieres por página (por defecto 25, máximo 50).
+offset: Define desde qué resultado quieres empezar a contar. Para ir a la página 2 con un límite de 25, usarías offset=25.
+
+Ejemplo: Obtener los productos del 11 al 20.
+https://api.bsale.cl/v1/products.json?limit=10&offset=10
+
+Expansión de Datos:
+expand: Permite traer objetos relacionados en la misma llamada para evitar consultas adicionales.
+
+Ejemplo: Obtener los productos y, para cada uno, traer el detalle completo de sus impuestos y variantes.
+https://api.bsale.cl/v1/products.json?expand=[variants,taxes]
+
+Filtros Específicos:
+Puedes filtrar por campos específicos del recurso.
+
+Ejemplo: Buscar un cliente por su RUT (en Bsale el campo es code).
+https://api.bsale.cl/v1/clients.json?code=11.111.111-1
+
+Envío de Datos (Para Peticiones POST y PUT)
+
+Cuando creas (POST) o actualizas (PUT) un recurso, debes enviar los datos en el cuerpo (body) de la petición en formato JSON.
+
+Debes incluir el siguiente encabezado para especificar el formato del contenido:
+Clave: Content-Type
+Valor: application/json
+
+Ejemplo: Crear un nuevo cliente (POST)
+URL: https://api.bsale.cl/v1/clients.json
+Método: POST
+Cuerpo (Body) en formato JSON:
+{
+"firstName": "Juan",
+"lastName": "Pérez",
+"code": "12.345.678-9",
+"city": "Viña del Mar",
+"email": "juan.perez@example.com"
+}
+
+Estructura de la Respuesta
+
+La API siempre responderá en formato JSON.
+
+Listas de Recursos (GET): La respuesta es un objeto que contiene información de paginación y la lista de items.
+{
+"href": "https://api.bsale.cl/v1/products.json?limit=1",
+"count": 150,
+"limit": 1,
+"offset": 0,
+"items": [
+{
+"id": 1,
+"name": "Producto de Ejemplo",
+"href": "https://api.bsale.cl/v1/products/1.json"
+}
+]
+}
+
+Recurso Único (GET, POST, PUT): La respuesta es directamente el objeto del recurso.
+{
+"id": 1,
+"name": "Producto de Ejemplo",
+"href": "https://api.bsale.cl/v1/products/1.json"
+}
+
+Ejemplo Práctico en Python
+
+Aquí tienes un ejemplo completo de cómo obtener los primeros 10 productos usando la librería requests en Python.
+
+import requests
+import json
+
+Tu token de acceso personal de Bsale
+ACCESS_TOKEN = "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
+
+La URL del recurso que queremos consultar
+url = "https://api.bsale.cl/v1/products.json"
+
+Parámetros para la petición (limitar a 10 resultados)
+params = {
+"limit": 10
+}
+
+Encabezados (headers) requeridos para la autenticación
+headers = {
+"Content-Type": "application/json",
+"access_token": ACCESS_TOKEN
+}
+
+try:
+# Hacemos la petición GET
+response = requests.get(url, headers=headers, params=params)
+
+# Verificamos si la petición fue exitosa (código 200 OK)
+response.raise_for_status()
+
+# Convertimos la respuesta JSON en un diccionario de Python
+data = response.json()
+
+# Imprimimos el nombre de cada producto
+print(f"Se encontraron {data['count']} productos en total.")
+for producto in data['items']:
+    print(f"ID: {producto['id']}, Nombre: {producto['name']}")
+except requests.exceptions.HTTPError as err:
+print(f"Error HTTP: {err}")
+print(f"Respuesta del servidor: {err.response.text}")
+except requests.exceptions.RequestException as e:
+print(f"Error de conexión: {e}")

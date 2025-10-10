@@ -1,0 +1,920 @@
+[
+  {
+    "insertId": "68e85a75000bf4149499bdec",
+    "httpRequest": {
+      "requestMethod": "POST",
+      "requestUrl": "https://imperio-patitas-etl-24590285888.southamerica-west1.run.app/etl/sync/all",
+      "requestSize": "340",
+      "status": 200,
+      "responseSize": "154",
+      "userAgent": "curl/8.5.0",
+      "remoteIp": "34.26.44.217",
+      "serverIp": "34.143.74.2",
+      "latency": "256.561287425s",
+      "protocol": "HTTP/1.1"
+    },
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "configuration_name": "imperio-patitas-etl",
+        "service_name": "imperio-patitas-etl",
+        "project_id": "imperio-patitas-cloud",
+        "location": "southamerica-west1"
+      }
+    },
+    "timestamp": "2025-10-10T00:55:15.997674Z",
+    "severity": "INFO",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Frequests",
+    "trace": "projects/imperio-patitas-cloud/traces/4a6c1f8b9c4cbb0db051a55a32aea2f4",
+    "receiveTimestamp": "2025-10-10T00:59:33.785567312Z",
+    "spanId": "270930410c1f81dc",
+    "traceSampled": true
+  },
+  {
+    "textPayload": "Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.",
+    "insertId": "68e8597400005c3088fb435d",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "service_name": "imperio-patitas-etl",
+        "project_id": "imperio-patitas-cloud",
+        "location": "southamerica-west1",
+        "configuration_name": "imperio-patitas-etl"
+      }
+    },
+    "timestamp": "2025-10-10T00:55:16.023600Z",
+    "severity": "INFO",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812",
+      "scaling_reason": "AUTOSCALING"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fvarlog%2Fsystem",
+    "receiveTimestamp": "2025-10-10T00:55:16.025470786Z"
+  },
+  {
+    "textPayload": "INFO:     Started server process [1]",
+    "insertId": "68e8597900078608e9e7855b",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "service_name": "imperio-patitas-etl",
+        "project_id": "imperio-patitas-cloud",
+        "location": "southamerica-west1",
+        "configuration_name": "imperio-patitas-etl"
+      }
+    },
+    "timestamp": "2025-10-10T00:55:21.493064Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-10T00:55:21.494895995Z"
+  },
+  {
+    "textPayload": "INFO:     Waiting for application startup.",
+    "insertId": "68e85979000786d3d50bc636",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "service_name": "imperio-patitas-etl",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "project_id": "imperio-patitas-cloud",
+        "configuration_name": "imperio-patitas-etl",
+        "location": "southamerica-west1"
+      }
+    },
+    "timestamp": "2025-10-10T00:55:21.493267Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-10T00:55:21.494895995Z"
+  },
+  {
+    "textPayload": "INFO:     Application startup complete.",
+    "insertId": "68e8597900078a7247b1425a",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "project_id": "imperio-patitas-cloud",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "configuration_name": "imperio-patitas-etl",
+        "service_name": "imperio-patitas-etl",
+        "location": "southamerica-west1"
+      }
+    },
+    "timestamp": "2025-10-10T00:55:21.494194Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-10T00:55:21.828189049Z"
+  },
+  {
+    "textPayload": "INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)",
+    "insertId": "68e859790007981ab8a54e1f",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "location": "southamerica-west1",
+        "service_name": "imperio-patitas-etl",
+        "project_id": "imperio-patitas-cloud",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "configuration_name": "imperio-patitas-etl"
+      }
+    },
+    "timestamp": "2025-10-10T00:55:21.497690Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-10T00:55:21.828189049Z"
+  },
+  {
+    "textPayload": "Default STARTUP TCP probe succeeded after 1 attempt for container \"imperio-patitas-etl-1\" on port 8080.",
+    "insertId": "68e8597900079a6cd9122b0b",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "location": "southamerica-west1",
+        "service_name": "imperio-patitas-etl",
+        "configuration_name": "imperio-patitas-etl",
+        "project_id": "imperio-patitas-cloud",
+        "revision_name": "imperio-patitas-etl-00060-vgq"
+      }
+    },
+    "timestamp": "2025-10-10T00:55:21.498284Z",
+    "severity": "INFO",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fvarlog%2Fsystem",
+    "receiveTimestamp": "2025-10-10T00:55:21.688047469Z"
+  },
+  {
+    "textPayload": "Iniciando sincronización de Clientes...",
+    "insertId": "68e85a75000bcf22a73cf675",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "project_id": "imperio-patitas-cloud",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "configuration_name": "imperio-patitas-etl",
+        "service_name": "imperio-patitas-etl",
+        "location": "southamerica-west1"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.773922Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:33.776160745Z"
+  },
+  {
+    "textPayload": "Sincronización de Clientes finalizada. 1095 registros procesados y guardados.",
+    "insertId": "68e85a75000bcf3cfe55e6de",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "configuration_name": "imperio-patitas-etl",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "service_name": "imperio-patitas-etl",
+        "project_id": "imperio-patitas-cloud",
+        "location": "southamerica-west1"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.773948Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:33.776160745Z"
+  },
+  {
+    "textPayload": "Iniciando sincronización de Productos...",
+    "insertId": "68e85a75000bcf42539174e1",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "configuration_name": "imperio-patitas-etl",
+        "project_id": "imperio-patitas-cloud",
+        "service_name": "imperio-patitas-etl",
+        "location": "southamerica-west1",
+        "revision_name": "imperio-patitas-etl-00060-vgq"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.773954Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:33.776160745Z"
+  },
+  {
+    "textPayload": "Transformación finalizada. Se cargarán 1487 productos/variantes.",
+    "insertId": "68e85a75000bcf47cd199154",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "configuration_name": "imperio-patitas-etl",
+        "project_id": "imperio-patitas-cloud",
+        "location": "southamerica-west1",
+        "service_name": "imperio-patitas-etl"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.773959Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:33.776160745Z"
+  },
+  {
+    "textPayload": "Sincronización de Productos finalizada. 1487 registros procesados y guardados.",
+    "insertId": "68e85a75000bcf4aea8bb70c",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "project_id": "imperio-patitas-cloud",
+        "configuration_name": "imperio-patitas-etl",
+        "location": "southamerica-west1",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "service_name": "imperio-patitas-etl"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.773962Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:33.776160745Z"
+  },
+  {
+    "textPayload": "Iniciando sincronización de Documentos de Venta (desde el inicio)...",
+    "insertId": "68e85a75000bcf4efdc564fd",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "configuration_name": "imperio-patitas-etl",
+        "location": "southamerica-west1",
+        "project_id": "imperio-patitas-cloud",
+        "service_name": "imperio-patitas-etl",
+        "revision_name": "imperio-patitas-etl-00060-vgq"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.773966Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:33.776160745Z"
+  },
+  {
+    "textPayload": "Se encontraron 5788 documentos. Procesando en lotes...",
+    "insertId": "68e85a75000bcf52c26ba340",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "location": "southamerica-west1",
+        "service_name": "imperio-patitas-etl",
+        "configuration_name": "imperio-patitas-etl",
+        "project_id": "imperio-patitas-cloud"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.773970Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:33.776160745Z"
+  },
+  {
+    "textPayload": "Se encontraron 1095 clientes existentes en la base de datos para validación.",
+    "insertId": "68e85a75000bcf5658980e25",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "location": "southamerica-west1",
+        "project_id": "imperio-patitas-cloud",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "service_name": "imperio-patitas-etl",
+        "configuration_name": "imperio-patitas-etl"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.773974Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:33.776160745Z"
+  },
+  {
+    "textPayload": "--- Procesando lote 1 de documentos... ---",
+    "insertId": "68e85a75000bcf59e9d3700d",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "location": "southamerica-west1",
+        "service_name": "imperio-patitas-etl",
+        "project_id": "imperio-patitas-cloud",
+        "configuration_name": "imperio-patitas-etl"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.773977Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:33.776160745Z"
+  },
+  {
+    "textPayload": "--- Lote 1 procesado y guardado. ---",
+    "insertId": "68e85a75000bcf5dc205ca81",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "project_id": "imperio-patitas-cloud",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "location": "southamerica-west1",
+        "service_name": "imperio-patitas-etl",
+        "configuration_name": "imperio-patitas-etl"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.773981Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:33.776160745Z"
+  },
+  {
+    "textPayload": "--- Procesando lote 2 de documentos... ---",
+    "insertId": "68e85a75000bcf61b0a1c7e4",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "project_id": "imperio-patitas-cloud",
+        "service_name": "imperio-patitas-etl",
+        "location": "southamerica-west1",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "configuration_name": "imperio-patitas-etl"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.773985Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:33.776160745Z"
+  },
+  {
+    "textPayload": "--- Lote 2 procesado y guardado. ---",
+    "insertId": "68e85a75000bcf658bfe54f8",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "location": "southamerica-west1",
+        "service_name": "imperio-patitas-etl",
+        "configuration_name": "imperio-patitas-etl",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "project_id": "imperio-patitas-cloud"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.773989Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:33.776160745Z"
+  },
+  {
+    "textPayload": "--- Procesando lote 3 de documentos... ---",
+    "insertId": "68e85a75000bcf68e255ae86",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "location": "southamerica-west1",
+        "service_name": "imperio-patitas-etl",
+        "project_id": "imperio-patitas-cloud",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "configuration_name": "imperio-patitas-etl"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.773992Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:33.776160745Z"
+  },
+  {
+    "textPayload": "--- Lote 3 procesado y guardado. ---",
+    "insertId": "68e85a75000bcf6cd75cf315",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "configuration_name": "imperio-patitas-etl",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "location": "southamerica-west1",
+        "service_name": "imperio-patitas-etl",
+        "project_id": "imperio-patitas-cloud"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.773996Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:33.776160745Z"
+  },
+  {
+    "textPayload": "--- Procesando lote 4 de documentos... ---",
+    "insertId": "68e85a75000bcf704305b854",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "configuration_name": "imperio-patitas-etl",
+        "project_id": "imperio-patitas-cloud",
+        "service_name": "imperio-patitas-etl",
+        "location": "southamerica-west1"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.774Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:33.776160745Z"
+  },
+  {
+    "textPayload": "--- Lote 4 procesado y guardado. ---",
+    "insertId": "68e85a75000bcf748551160d",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "project_id": "imperio-patitas-cloud",
+        "service_name": "imperio-patitas-etl",
+        "location": "southamerica-west1",
+        "configuration_name": "imperio-patitas-etl",
+        "revision_name": "imperio-patitas-etl-00060-vgq"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.774004Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:33.776160745Z"
+  },
+  {
+    "textPayload": "--- Procesando lote 5 de documentos... ---",
+    "insertId": "68e85a75000bcf78bb9a1b18",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "project_id": "imperio-patitas-cloud",
+        "location": "southamerica-west1",
+        "configuration_name": "imperio-patitas-etl",
+        "service_name": "imperio-patitas-etl",
+        "revision_name": "imperio-patitas-etl-00060-vgq"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.774008Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:33.776160745Z"
+  },
+  {
+    "textPayload": "--- Lote 5 procesado y guardado. ---",
+    "insertId": "68e85a75000bcf7c6f5026f2",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "project_id": "imperio-patitas-cloud",
+        "service_name": "imperio-patitas-etl",
+        "location": "southamerica-west1",
+        "configuration_name": "imperio-patitas-etl"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.774012Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:33.776160745Z"
+  },
+  {
+    "textPayload": "--- Procesando lote 6 de documentos... ---",
+    "insertId": "68e85a75000bcf804a83e6af",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "configuration_name": "imperio-patitas-etl",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "location": "southamerica-west1",
+        "project_id": "imperio-patitas-cloud",
+        "service_name": "imperio-patitas-etl"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.774016Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:33.776160745Z"
+  },
+  {
+    "textPayload": "--- Lote 6 procesado y guardado. ---",
+    "insertId": "68e85a75000bcf84329a5537",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "project_id": "imperio-patitas-cloud",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "location": "southamerica-west1",
+        "service_name": "imperio-patitas-etl",
+        "configuration_name": "imperio-patitas-etl"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.774020Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:33.776160745Z"
+  },
+  {
+    "textPayload": "--- Procesando lote 7 de documentos... ---",
+    "insertId": "68e85a75000bcf882a958b00",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "configuration_name": "imperio-patitas-etl",
+        "location": "southamerica-west1",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "service_name": "imperio-patitas-etl",
+        "project_id": "imperio-patitas-cloud"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.774024Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:34.109018618Z"
+  },
+  {
+    "textPayload": "--- Lote 7 procesado y guardado. ---",
+    "insertId": "68e85a75000bcf8c0d7f3ac2",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "service_name": "imperio-patitas-etl",
+        "location": "southamerica-west1",
+        "project_id": "imperio-patitas-cloud",
+        "configuration_name": "imperio-patitas-etl",
+        "revision_name": "imperio-patitas-etl-00060-vgq"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.774028Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:34.109018618Z"
+  },
+  {
+    "textPayload": "--- Procesando lote 8 de documentos... ---",
+    "insertId": "68e85a75000bcf907aba32db",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "configuration_name": "imperio-patitas-etl",
+        "project_id": "imperio-patitas-cloud",
+        "service_name": "imperio-patitas-etl",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "location": "southamerica-west1"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.774032Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:34.109018618Z"
+  },
+  {
+    "textPayload": "--- Lote 8 procesado y guardado. ---",
+    "insertId": "68e85a75000bcf93ba5b4d18",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "configuration_name": "imperio-patitas-etl",
+        "location": "southamerica-west1",
+        "project_id": "imperio-patitas-cloud",
+        "service_name": "imperio-patitas-etl",
+        "revision_name": "imperio-patitas-etl-00060-vgq"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.774035Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:34.109018618Z"
+  },
+  {
+    "textPayload": "--- Procesando lote 9 de documentos... ---",
+    "insertId": "68e85a75000bcf98cf80ec85",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "location": "southamerica-west1",
+        "project_id": "imperio-patitas-cloud",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "configuration_name": "imperio-patitas-etl",
+        "service_name": "imperio-patitas-etl"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.774040Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:34.109018618Z"
+  },
+  {
+    "textPayload": "--- Lote 9 procesado y guardado. ---",
+    "insertId": "68e85a75000bcf9b502fdf63",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "project_id": "imperio-patitas-cloud",
+        "location": "southamerica-west1",
+        "configuration_name": "imperio-patitas-etl",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "service_name": "imperio-patitas-etl"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.774043Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:34.109018618Z"
+  },
+  {
+    "textPayload": "--- Procesando lote 10 de documentos... ---",
+    "insertId": "68e85a75000bcf9f535e039e",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "location": "southamerica-west1",
+        "project_id": "imperio-patitas-cloud",
+        "service_name": "imperio-patitas-etl",
+        "configuration_name": "imperio-patitas-etl"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.774047Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:34.109018618Z"
+  },
+  {
+    "textPayload": "--- Lote 10 procesado y guardado. ---",
+    "insertId": "68e85a75000bcfa326f8cad0",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "project_id": "imperio-patitas-cloud",
+        "configuration_name": "imperio-patitas-etl",
+        "location": "southamerica-west1",
+        "service_name": "imperio-patitas-etl"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.774051Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:34.109018618Z"
+  },
+  {
+    "textPayload": "--- Procesando lote 11 de documentos... ---",
+    "insertId": "68e85a75000bcfa6527f0d20",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "service_name": "imperio-patitas-etl",
+        "configuration_name": "imperio-patitas-etl",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "location": "southamerica-west1",
+        "project_id": "imperio-patitas-cloud"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.774054Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:34.109018618Z"
+  },
+  {
+    "textPayload": "--- Lote 11 procesado y guardado. ---",
+    "insertId": "68e85a75000bcfaaad2a022e",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "location": "southamerica-west1",
+        "configuration_name": "imperio-patitas-etl",
+        "project_id": "imperio-patitas-cloud",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "service_name": "imperio-patitas-etl"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.774058Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:34.109018618Z"
+  },
+  {
+    "textPayload": "--- Procesando lote 12 de documentos... ---",
+    "insertId": "68e85a75000bcfae318a1385",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "project_id": "imperio-patitas-cloud",
+        "configuration_name": "imperio-patitas-etl",
+        "service_name": "imperio-patitas-etl",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "location": "southamerica-west1"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.774062Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:34.109018618Z"
+  },
+  {
+    "textPayload": "--- Lote 12 procesado y guardado. ---",
+    "insertId": "68e85a75000bcfb29680d824",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "service_name": "imperio-patitas-etl",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "configuration_name": "imperio-patitas-etl",
+        "project_id": "imperio-patitas-cloud",
+        "location": "southamerica-west1"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.774066Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:34.109018618Z"
+  },
+  {
+    "textPayload": "Sincronización de Documentos finalizada. 5788 registros procesados.",
+    "insertId": "68e85a75000bcfb7a7ab542c",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "service_name": "imperio-patitas-etl",
+        "project_id": "imperio-patitas-cloud",
+        "configuration_name": "imperio-patitas-etl",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "location": "southamerica-west1"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.774071Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:34.109018618Z"
+  },
+  {
+    "textPayload": "INFO:     169.254.169.126:36860 - \"POST /etl/sync/all HTTP/1.1\" 200 OK",
+    "insertId": "68e85a75000bcfbb08e3c8f4",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "project_id": "imperio-patitas-cloud",
+        "location": "southamerica-west1",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "service_name": "imperio-patitas-etl",
+        "configuration_name": "imperio-patitas-etl"
+      }
+    },
+    "timestamp": "2025-10-10T00:59:33.774075Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstdout",
+    "receiveTimestamp": "2025-10-10T00:59:34.109018618Z"
+  },
+  {
+    "textPayload": "INFO:     Shutting down",
+    "insertId": "68e85dff000c25cd5bfb66a4",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "project_id": "imperio-patitas-cloud",
+        "service_name": "imperio-patitas-etl",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "configuration_name": "imperio-patitas-etl",
+        "location": "southamerica-west1"
+      }
+    },
+    "timestamp": "2025-10-10T01:14:39.796109Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-10T01:14:39.797983661Z"
+  },
+  {
+    "textPayload": "INFO:     Waiting for application shutdown.",
+    "insertId": "68e85dff000db295b22036ad",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "location": "southamerica-west1",
+        "project_id": "imperio-patitas-cloud",
+        "configuration_name": "imperio-patitas-etl",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "service_name": "imperio-patitas-etl"
+      }
+    },
+    "timestamp": "2025-10-10T01:14:39.897685Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-10T01:14:40.131151397Z"
+  },
+  {
+    "textPayload": "INFO:     Application shutdown complete.",
+    "insertId": "68e85dff000db3e5835a46f1",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "service_name": "imperio-patitas-etl",
+        "revision_name": "imperio-patitas-etl-00060-vgq",
+        "project_id": "imperio-patitas-cloud",
+        "configuration_name": "imperio-patitas-etl",
+        "location": "southamerica-west1"
+      }
+    },
+    "timestamp": "2025-10-10T01:14:39.898021Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-10T01:14:40.131151397Z"
+  },
+  {
+    "textPayload": "INFO:     Finished server process [1]",
+    "insertId": "68e85dff000db4bf6f6db637",
+    "resource": {
+      "type": "cloud_run_revision",
+      "labels": {
+        "service_name": "imperio-patitas-etl",
+        "location": "southamerica-west1",
+        "configuration_name": "imperio-patitas-etl",
+        "project_id": "imperio-patitas-cloud",
+        "revision_name": "imperio-patitas-etl-00060-vgq"
+      }
+    },
+    "timestamp": "2025-10-10T01:14:39.898239Z",
+    "labels": {
+      "instanceId": "0069c7a98860703baacf6f57423401e027b92fafd9a28d4303d1cc2deda5719bb393d9c5721ad09fee9cea621c696f121bf566a77734ee2a4f66e96e39f2d2b230e5fb704baccb06ae6f3e0812"
+    },
+    "logName": "projects/imperio-patitas-cloud/logs/run.googleapis.com%2Fstderr",
+    "receiveTimestamp": "2025-10-10T01:14:40.131151397Z"
+  }
+]
