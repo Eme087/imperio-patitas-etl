@@ -21,22 +21,44 @@ La estructura del proyecto está diseñada para ser clara y escalable:
 
 ```
 imperio-patitas-etl/
+# Servicio ETL para Imperio Patitas
+
+Este proyecto es un servicio ETL (Extract, Transform, Load) construido con **FastAPI**. Extrae datos de la API de **Bsale**, los transforma y los carga en **Google BigQuery** (antes MySQL).
+
+## Características
+
+- **API para Sincronización**: Endpoints RESTful para iniciar la sincronización de entidades.
+- **Arquitectura Modular**: Código organizado por responsabilidades (`api`, `services`, `db`, `core`).
+- **Configuración Segura**: Variables sensibles desde `.env` usando Pydantic.
+- **Carga en BigQuery**: Los datos se insertan directamente en BigQuery usando el cliente oficial de Google Cloud.
+- **Procesamiento por Lotes**: Sincronización eficiente y robusta, con control de integridad.
+- **Cliente de API Centralizado**: Toda la comunicación con Bsale se gestiona en un único cliente.
+- **Reglas de Negocio Estrictas**: El ETL extrae precios solo de la lista 2 de Bsale. Si falta el precio de una variante, el proceso se detiene y alerta (no se rellena con cero).
+- **Manejo de Dependencias**: Instalación fácil vía `requirements.txt`.
+
+---
+
+## Arquitectura del Proyecto
+
+La estructura del proyecto está diseñada para ser clara y escalable:
+
+```
+imperio-patitas-etl/
 │
 ├── app/
 │   ├── api/
-│   │   └── endpoints.py      # Define los endpoints de la API (rutas).
+│   │   └── endpoints.py      # Endpoints de la API.
 │   ├── core/
-│   │   └── config.py         # Gestiona la configuración desde el archivo .env.
+│   │   └── config.py         # Configuración y variables de entorno.
 │   ├── db/
-│   │   ├── base.py           # Configura el motor y la sesión de SQLAlchemy.
-│   │   └── models.py         # Define las tablas de la BBDD como modelos de SQLAlchemy.
+│   │   └── bigquery_client.py # Cliente para Google BigQuery.
 │   ├── services/
-│   │   ├── bsale_client.py   # Cliente para interactuar con la API de Bsale.
-│   │   └── etl_service.py    # Contiene toda la lógica de ETL (extracción, transformación, carga).
-│   └── main.py               # Punto de entrada de la aplicación FastAPI.
+│   │   ├── bsale_client.py   # Cliente para la API de Bsale.
+│   │   └── etl_service.py    # Lógica ETL principal.
+│   └── main.py               # Entrada FastAPI.
 │
-├── .env                      # Archivo para variables de entorno (local).
-└── requirements.txt          # Dependencias de Python.
+├── .env                      # Variables de entorno.
+└── requirements.txt          # Dependencias.
 ```
 
 ---
@@ -46,7 +68,7 @@ imperio-patitas-etl/
 ### 1. Prerrequisitos
 
 - Python 3.8 o superior.
-- Una base de datos MySQL accesible.
+- Acceso a Google BigQuery y credenciales de GCP.
 
 ### 2. Clonar el Repositorio
 
@@ -57,40 +79,37 @@ cd imperio-patitas-etl
 
 ### 3. Configurar el Entorno
 
-Se recomienda utilizar un entorno virtual:
-
 ```bash
 python -m venv venv
-source venv/bin/activate  # En Windows: venv\Scripts\activate
-```
-
-Instala las dependencias:
-
-```bash
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
 ### 4. Configurar Variables de Entorno
 
-CrSe ha creado un archivo llamado `.env` en la raíz del proyecto y añade las siguientes variables con tus propios valores:
+Crea un archivo `.env` en la raíz con:
 
 ```ini
-# URL de conexión a tu base de datos MySQL
-DATABASE_URL="mysql+pymysql://tu_usuario:tu_contraseña@host_de_tu_bbdd/nombre_de_la_bbdd" # Para Cloud SQL, usa el formato con unix_socket
+# Configuración de BigQuery
+BIGQUERY_PROJECT_ID="tu_project_id"
+BIGQUERY_DATASET="tu_dataset"
+BIGQUERY_TABLE_CLIENTS="tabla_clientes"
+BIGQUERY_TABLE_PRODUCTS="tabla_productos"
+BIGQUERY_TABLE_DOCUMENTS="tabla_documentos"
 
 # Token de acceso para la API de Bsale
 BSALE_API_TOKEN="tu_token_secreto_de_bsale"
 ```
 
-### 5. Ejecutar la Aplicación
+Asegúrate de tener configuradas las credenciales de GCP (Application Default Credentials).
 
-Usa `uvicorn` para iniciar el servidor de desarrollo:
+### 5. Ejecutar la Aplicación
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-El servidor estará disponible en `http://127.0.0.1:8000`. Puedes acceder a la documentación interactiva de la API (generada por Swagger) en `http://127.0.0.1:8000/docs`.
+La API estará disponible en `http://127.0.0.1:8000/docs`.
 
 ---
 
@@ -98,33 +117,17 @@ El servidor estará disponible en `http://127.0.0.1:8000`. Puedes acceder a la d
 
 ### Sincronizar Entidades
 
-- **Endpoint**: `/etl/sync/{entity}`
-- **Método**: `POST`
-- **Descripción**: Ejecuta el proceso de sincronización para una entidad específica.
-- **Parámetros de Ruta**:
-  - `entity` (string): La entidad a sincronizar. Valores válidos:
-    - `clients`: Sincroniza solo los clientes.
-    - `products`: Sincroniza productos y variantes.
-    - `documents`: Sincroniza documentos de venta y sus detalles.
-    - `all`: Ejecuta la sincronización completa en orden (clientes, productos, documentos).
-- **Parámetros de Query (Opcional)**:
-  - `start_date` (string, formato `YYYY-MM-DD`): Usado solo con `entity=documents` o `entity=all` para sincronizar documentos a partir de una fecha específica.
+- **POST** `/etl/sync/{entity}`  
+  Sincroniza una entidad (`clients`, `products`, `documents`, `all`).  
+  Si falta el precio de una variante en la lista 2, el proceso se detiene y alerta.
 
-**Ejemplo de uso con cURL:**
+**Ejemplo:**
 
 ```bash
-# Ejecutar una sincronización completa
 curl -X POST "http://127.0.0.1:8000/etl/sync/all"
-
-# Ejecutar una sincronización completa, aplicando el filtro de fecha a los documentos
-curl -X POST "http://127.0.0.1:8000/etl/sync/all?start_date=2024-07-01"
-
-# Sincronizar solo los productos
-curl -X POST "http://127.0.0.1:8000/etl/sync/products"
 ```
 
 ### Chequeo de Salud
 
-- **URL**: `/health`
-- **Método**: `GET`
-- **Descripción**: Endpoint simple para verificar que el servicio está en funcionamiento. Devuelve `{"status": "ok"}`.
+- **GET** `/health`  
+  Verifica que el servicio está activo.

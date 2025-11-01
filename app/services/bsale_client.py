@@ -6,6 +6,25 @@ from typing import List, Dict, Any
 from app.core.config import settings
 
 class BsaleClient:
+    def fetch(self, endpoint: str, params: Dict = None) -> Dict[str, Any]:
+        """
+        Realiza una petición GET canónica a la API de Bsale.
+        endpoint: ruta relativa (ejemplo: 'price_lists/2/details.json')
+        params: diccionario de parámetros para la consulta
+        Devuelve el JSON decodificado o None en caso de error.
+        """
+        url = f"{self.base_url}/{endpoint}"
+        try:
+            response = requests.get(url, headers=self.headers, params=params, timeout=60)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.HTTPError as http_err:
+            print(f"[BsaleClient.fetch] Error HTTP al consultar {url} con params {params}: {http_err}")
+            print(f"Respuesta: {response.text}")
+            return None
+        except Exception as err:
+            print(f"[BsaleClient.fetch] Error inesperado al consultar {url}: {err}")
+            return None
     def __init__(self):
         self.base_url = "https://api.bsale.io/v1"
         self.headers = {

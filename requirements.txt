@@ -13,3 +13,6 @@ PyMySQL # Dialecto de MySQL para SQLAlchemy
 
 # ---- Cliente HTTP para la API de Bsale ----
 requests
+
+# Google BigQuery client (usado si se configura BIGQUERY_DATASET en el .env)
+google-cloud-bigquery>=3.10.0
