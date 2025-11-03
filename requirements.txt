@@ -6,10 +6,8 @@ uvicorn[standard]
 pydantic
 pydantic-settings
 
-# ---- Base de Datos (SQLAlchemy y Conector de Google) ----
-SQLAlchemy # ORM
-PyMySQL # Dialecto de MySQL para SQLAlchemy
-# cloud-sql-python-connector[pymysql] # Mantenemos esto comentado por ahora
+# ---- Base de Datos (solo BigQuery) ----
+# SQLAlchemy y PyMySQL removidos - solo usamos BigQuery
 
 # ---- Cliente HTTP para la API de Bsale ----
 requests

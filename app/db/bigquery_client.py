@@ -42,6 +42,19 @@ class BigQueryWriter:
             # Re-raise for the caller; preserve stack trace
             raise
 
+    def query(self, sql: str):
+        """Execute a SQL query on BigQuery.
+        
+        Used for operations like DELETE, UPDATE, MERGE, etc.
+        """
+        try:
+            query_job = self.client.query(sql)
+            result = query_job.result()  # Wait for the job to complete
+            return result
+        except Exception:
+            # Re-raise for the caller; preserve stack trace
+            raise
+
 
 def get_bq_writer() -> BigQueryWriter:
     return BigQueryWriter()

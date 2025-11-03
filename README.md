@@ -1,133 +1,194 @@
-# Servicio ETL para Imperio Patitas
+# Imperio Patitas ETL - Cloud Run
 
-Este proyecto es un servicio de ETL (Extract, Transform, Load) construido con **FastAPI**. Su propósito es extraer datos de la API de **Bsale**, transformarlos y cargarlos de manera eficiente en una base de datos MySQL, optimizada para entornos como Google Cloud SQL.
+Este proyecto es un servicio ETL (Extract, Transform, Load) construido con **FastAPI** y desplegado en **Google Cloud Run**. Su propósito es extraer datos de la API de **Bsale**, transformarlos y cargarlos de manera eficiente en **Google BigQuery** con integridad de datos.
 
-## Características
+## 🚀 Características
 
-- **API para Sincronización**: Expone endpoints RESTful para iniciar la sincronización de diferentes entidades.
-- **Arquitectura Modular**: El código está organizado por responsabilidades (`api`, `services`, `db`, `core`), facilitando su mantenimiento y escalabilidad.
-- **Configuración Segura**: Carga variables sensibles (como tokens de API y URLs de base de datos) desde un archivo `.env` usando Pydantic.
-- **ORM con SQLAlchemy**: Define los modelos de la base de datos y gestiona las sesiones de forma robusta.
-- **Carga de Datos Eficiente (UPSERT)**: Utiliza sentencias `INSERT ... ON DUPLICATE KEY UPDATE` para insertar o actualizar registros de forma atómica. Esto es crucial para mantener los datos sincronizados sin generar duplicados.
-- **Procesamiento por Lotes (Chunking)**: La sincronización de entidades grandes (como los documentos de venta) se realiza en lotes para optimizar el uso de memoria y asegurar la fiabilidad del proceso, haciendo commit a la base de datos después de cada lote.
-- **Cliente de API Centralizado**: Toda la comunicación con la API de Bsale se gestiona a través de un único cliente que maneja la autenticación y la paginación.
-- **Manejo de Dependencias**: Utiliza un archivo `requirements.txt` para una fácil instalación del entorno.
+- **🔄 Sincronización Automática**: Cloud Scheduler ejecuta el ETL diariamente a las 2:00 AM (Chile)
+- **🛡️ Sin Duplicados**: Operaciones MERGE en BigQuery evitan datos duplicados
+- **📊 BigQuery Native**: Carga directa usando el cliente oficial de Google Cloud
+- **✅ Validación Estricta**: Productos sin precio/costo válido son rechazados automáticamente
+- **🎯 Reglas de Negocio**: 
+  - Precios desde lista 2 de Bsale (obligatorio)
+  - Costos desde endpoint específico de Bsale
+  - Cálculo automático: costo = precio × 0.65 (cuando no hay historial)
+- **🏗️ Arquitectura Cloud**: Desplegado en Cloud Run con escalado automático
+- **🔐 Seguridad**: Autenticación OIDC y variables de entorno seguras
 
----
+## 📋 Entidades Sincronizadas
 
-## Arquitectura del Proyecto
+| Entidad | Tabla BigQuery | Clave Única | Descripción |
+|---------|----------------|-------------|-------------|
+| **Clientes** | `cliente` | `id_bsale` | Información de clientes (RUT opcional) |
+| **Productos** | `producto` | `id_bsale` | Variantes con precios y costos validados |
+| **Documentos** | `documento_venta` | `id_bsale` | Facturas, boletas y otros documentos |
+| **Detalles** | `detalle_documento` | `id_documento + id_producto` | Líneas de documentos |
 
-La estructura del proyecto está diseñada para ser clara y escalable:
+## 🏗️ Arquitectura Cloud
 
 ```
-imperio-patitas-etl/
-# Servicio ETL para Imperio Patitas
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│  Cloud Scheduler │───►│   Cloud Run      │───►│   BigQuery      │
+│                 │    │                  │    │                 │
+│ Diario 2:00 AM  │    │ FastAPI ETL      │    │ Dataset:        │
+│ (Chile)         │    │ Auto-scaling     │    │ imperio_patitas │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+                                │
+                                ▼
+                       ┌──────────────────┐
+                       │   Bsale API      │
+                       │                  │
+                       │ - Products       │
+                       │ - Clients        │
+                       │ - Documents      │
+                       │ - Price Lists    │
+                       │ - Costs          │
+                       └──────────────────┘
+```
 
-Este proyecto es un servicio ETL (Extract, Transform, Load) construido con **FastAPI**. Extrae datos de la API de **Bsale**, los transforma y los carga en **Google BigQuery** (antes MySQL).
-
-## Características
-
-- **API para Sincronización**: Endpoints RESTful para iniciar la sincronización de entidades.
-- **Arquitectura Modular**: Código organizado por responsabilidades (`api`, `services`, `db`, `core`).
-- **Configuración Segura**: Variables sensibles desde `.env` usando Pydantic.
-- **Carga en BigQuery**: Los datos se insertan directamente en BigQuery usando el cliente oficial de Google Cloud.
-- **Procesamiento por Lotes**: Sincronización eficiente y robusta, con control de integridad.
-- **Cliente de API Centralizado**: Toda la comunicación con Bsale se gestiona en un único cliente.
-- **Reglas de Negocio Estrictas**: El ETL extrae precios solo de la lista 2 de Bsale. Si falta el precio de una variante, el proceso se detiene y alerta (no se rellena con cero).
-- **Manejo de Dependencias**: Instalación fácil vía `requirements.txt`.
-
----
-
-## Arquitectura del Proyecto
-
-La estructura del proyecto está diseñada para ser clara y escalable:
+## 📁 Estructura del Proyecto
 
 ```
 imperio-patitas-etl/
 │
 ├── app/
 │   ├── api/
-│   │   └── endpoints.py      # Endpoints de la API.
+│   │   ├── endpoints.py           # Endpoints principales ETL
+│   │   └── scheduler_endpoints.py # Endpoints para Cloud Scheduler
 │   ├── core/
-│   │   └── config.py         # Configuración y variables de entorno.
+│   │   └── config.py             # Configuración (BigQuery + Bsale)
 │   ├── db/
-│   │   └── bigquery_client.py # Cliente para Google BigQuery.
+│   │   ├── bigquery_client.py    # Cliente BigQuery con MERGE
+│   │   └── models.py             # Esquemas de BigQuery
 │   ├── services/
-│   │   ├── bsale_client.py   # Cliente para la API de Bsale.
-│   │   └── etl_service.py    # Lógica ETL principal.
-│   └── main.py               # Entrada FastAPI.
+│   │   ├── bsale_client.py       # Cliente API Bsale
+│   │   └── etl_service.py        # Lógica ETL principal
+│   └── main.py                   # Aplicación FastAPI
 │
-├── .env                      # Variables de entorno.
-└── requirements.txt          # Dependencias.
+├── Dockerfile                    # Configuración contenedor
+├── cloudbuild.yaml              # Google Cloud Build
+├── deploy.sh                    # Script de despliegue
+├── requirements.txt             # Dependencias Python
+└── documentacion.txt           # Documentación API Bsale
 ```
+
+## 🛠️ Configuración
+
+### Variables de Entorno (Cloud Run)
+
+```bash
+# Configuración BigQuery
+BIGQUERY_PROJECT=imperio-patitas-cloud
+BIGQUERY_DATASET=imperio_patitas_bsale
+
+# Token Bsale (desde Secret Manager)
+BSALE_API_TOKEN=<secret>
+```
+
+### Tablas BigQuery
+
+Las tablas se crean automáticamente con los esquemas definidos en `app/db/models.py`:
+
+- `cliente`: Información de clientes
+- `producto`: Variantes con precios y costos
+- `documento_venta`: Documentos de venta
+- `detalle_documento`: Líneas de documentos
+
+## 📡 API Endpoints
+
+### Producción (Cloud Run)
+- **Base URL**: `https://imperio-patitas-etl-24590285888.southamerica-west1.run.app`
+
+### Endpoints Principales
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| `POST` | `/api/v1/etl/sync/all` | Sincronización completa |
+| `POST` | `/api/v1/etl/sync/clients` | Solo clientes |
+| `POST` | `/api/v1/etl/sync/products` | Solo productos |
+| `POST` | `/api/v1/etl/sync/documents` | Solo documentos |
+| `GET` | `/health` | Health check |
+| `GET` | `/docs` | Documentación Swagger |
+
+### Ejemplos de Uso
+
+```bash
+# Sincronización completa
+curl -X POST "https://imperio-patitas-etl-24590285888.southamerica-west1.run.app/api/v1/etl/sync/all"
+
+# Solo productos
+curl -X POST "https://imperio-patitas-etl-24590285888.southamerica-west1.run.app/api/v1/etl/sync/products"
+
+# Health check
+curl "https://imperio-patitas-etl-24590285888.southamerica-west1.run.app/health"
+```
+
+## ⏰ Programación Automática
+
+### Cloud Scheduler
+
+- **Job**: `etl-bsale-daily`
+- **Horario**: Todos los días a las 2:00 AM (Chile)
+- **Endpoint**: `/api/v1/etl/sync/all`
+- **Autenticación**: OIDC Token
+- **Ubicación**: `southamerica-east1`
+
+## 🔍 Lógica de Negocio
+
+### Validación de Productos
+
+1. **Precio obligatorio**: Debe existir en lista 2 de Bsale
+2. **Costo inteligente**:
+   - Si existe historial de costo → usar `averageCost`
+   - Si NO existe historial → calcular `precio × 0.65`
+3. **Rechazo automático**: Productos sin precio válido son omitidos
+
+### Prevención de Duplicados
+
+```sql
+-- Ejemplo de operación MERGE usado internamente
+MERGE `proyecto.dataset.producto` AS target
+USING (SELECT * FROM UNNEST([...])) AS source
+ON target.id_bsale = source.id_bsale
+WHEN MATCHED THEN UPDATE SET ...
+WHEN NOT MATCHED THEN INSERT ...
+```
+
+## 📊 Monitoreo
+
+### Cloud Run Logs
+```bash
+gcloud logging read "resource.type=cloud_run_revision AND resource.labels.service_name=imperio-patitas-etl" --limit=50
+```
+
+### BigQuery Queries
+```sql
+-- Verificar datos cargados
+SELECT COUNT(*) FROM `imperio-patitas-cloud.imperio_patitas_bsale.producto`;
+SELECT COUNT(*) FROM `imperio-patitas-cloud.imperio_patitas_bsale.cliente`;
+```
+
+## 🚀 Despliegue
+
+El proyecto se despliega automáticamente en Cloud Run:
+
+```bash
+# Despliegue manual
+gcloud run deploy imperio-patitas-etl \
+  --source . \
+  --region southamerica-west1 \
+  --set-env-vars BIGQUERY_PROJECT=imperio-patitas-cloud,BIGQUERY_DATASET=imperio_patitas_bsale
+```
+
+## ✅ Estado del Proyecto
+
+- **✅ Desplegado**: Cloud Run en producción
+- **✅ Programado**: Scheduler diario configurado
+- **✅ Datos limpios**: Sin duplicados en BigQuery
+- **✅ Validación estricta**: Precios y costos obligatorios
+- **✅ Monitoreo**: Logs en Cloud Logging
 
 ---
 
-## Guía de Instalación y Uso
-
-### 1. Prerrequisitos
-
-- Python 3.8 o superior.
-- Acceso a Google BigQuery y credenciales de GCP.
-
-### 2. Clonar el Repositorio
-
-```bash
-git clone <url-del-repositorio>
-cd imperio-patitas-etl
-```
-
-### 3. Configurar el Entorno
-
-```bash
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-### 4. Configurar Variables de Entorno
-
-Crea un archivo `.env` en la raíz con:
-
-```ini
-# Configuración de BigQuery
-BIGQUERY_PROJECT_ID="tu_project_id"
-BIGQUERY_DATASET="tu_dataset"
-BIGQUERY_TABLE_CLIENTS="tabla_clientes"
-BIGQUERY_TABLE_PRODUCTS="tabla_productos"
-BIGQUERY_TABLE_DOCUMENTS="tabla_documentos"
-
-# Token de acceso para la API de Bsale
-BSALE_API_TOKEN="tu_token_secreto_de_bsale"
-```
-
-Asegúrate de tener configuradas las credenciales de GCP (Application Default Credentials).
-
-### 5. Ejecutar la Aplicación
-
-```bash
-uvicorn app.main:app --reload
-```
-
-La API estará disponible en `http://127.0.0.1:8000/docs`.
-
----
-
-## Endpoints de la API
-
-### Sincronizar Entidades
-
-- **POST** `/etl/sync/{entity}`  
-  Sincroniza una entidad (`clients`, `products`, `documents`, `all`).  
-  Si falta el precio de una variante en la lista 2, el proceso se detiene y alerta.
-
-**Ejemplo:**
-
-```bash
-curl -X POST "http://127.0.0.1:8000/etl/sync/all"
-```
-
-### Chequeo de Salud
-
-- **GET** `/health`  
-  Verifica que el servicio está activo.
+**🏢 Imperio Patitas - ETL v2.0**  
+*Sincronización automática Bsale → BigQuery*

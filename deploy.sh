@@ -1,31 +1,63 @@
 #!/bin/bash
-set -euo pipefail
+# deploy.sh - Script de deploy para Cloud Run
 
-# 1. Configuración de variables
-export PROJECT_ID="imperio-patitas-cloud"
-export REGION="southamerica-west1"
-export SERVICE_NAME="imperio-patitas-etl"
-export IMAGE_REPO="etl-repo"
+set -e
 
-# URL completa de la imagen del contenedor
-export IMAGE_URL="${REGION}-docker.pkg.dev/${PROJECT_ID}/${IMAGE_REPO}/${SERVICE_NAME}:latest"
+PROJECT_ID="tu-proyecto-gcp"
+REGION="us-central1"
+SERVICE_NAME="imperio-patitas-etl"
 
-echo ">>> Iniciando despliegue del servicio: ${SERVICE_NAME}"
+echo "🚀 Desplegando Imperio Patitas ETL en Cloud Run..."
 
-# 2. Construir y subir la imagen a Artifact Registry
-echo "--> Paso 1/2: Construyendo y subiendo la imagen..."
-gcloud builds submit --tag "${IMAGE_URL}" .
+# 1. Construir y subir imagen
+echo "📦 Construyendo imagen Docker..."
+docker build -t gcr.io/${PROJECT_ID}/${SERVICE_NAME}:latest .
 
-# 3. Desplegar la nueva imagen en Cloud Run
-#    Hemos eliminado las banderas --timeout y --set-env-vars para que
-#    respete la configuración existente en la consola de Cloud Run.
-echo "--> Paso 2/2: Desplegando en Cloud Run..."
-gcloud run deploy "${SERVICE_NAME}" \
-  --image "${IMAGE_URL}" \
-  --region "${REGION}" \
-  --platform "managed" \
+echo "⬆️ Subiendo imagen a Container Registry..."
+docker push gcr.io/${PROJECT_ID}/${SERVICE_NAME}:latest
+
+# 2. Deploy a Cloud Run
+echo "☁️ Desplegando en Cloud Run..."
+gcloud run deploy ${SERVICE_NAME} \
+  --image gcr.io/${PROJECT_ID}/${SERVICE_NAME}:latest \
+  --region ${REGION} \
+  --platform managed \
   --allow-unauthenticated \
-  --max-instances "1" \
-  --set-secrets="BSALE_API_TOKEN=imperio-patitas-bsale-token:latest"
+  --memory 2Gi \
+  --cpu 2 \
+  --timeout 3600 \
+  --concurrency 1 \
+  --max-instances 1 \
+  --set-env-vars BIGQUERY_PROJECT=${PROJECT_ID},BIGQUERY_DATASET=imperio_patitas \
+  --update-secrets BSALE_API_TOKEN=bsale-api-token:latest
 
-echo ">>> ¡Despliegue completado!"
+# 3. Obtener URL del servicio
+SERVICE_URL=$(gcloud run services describe ${SERVICE_NAME} --region=${REGION} --format="value(status.url)")
+
+echo "✅ Deploy completado!"
+echo "🌐 URL del servicio: ${SERVICE_URL}"
+echo "📋 Endpoints disponibles:"
+echo "   - Health: ${SERVICE_URL}/scheduler/health"
+echo "   - ETL Diario: ${SERVICE_URL}/api/v1/scheduler/etl/daily"
+echo "   - ETL Incremental: ${SERVICE_URL}/api/v1/scheduler/etl/incremental"
+
+# 4. Configurar Cloud Scheduler (si no existe)
+echo "⏰ Configurando Cloud Scheduler..."
+
+# ETL Diario (6:00 AM)
+gcloud scheduler jobs create http etl-daily \
+  --schedule="0 6 * * *" \
+  --uri="${SERVICE_URL}/api/v1/scheduler/etl/daily" \
+  --http-method=POST \
+  --oidc-service-account-email=scheduler-sa@${PROJECT_ID}.iam.gserviceaccount.com \
+  --location=${REGION} || echo "Job etl-daily ya existe"
+
+# ETL Incremental (cada 4 horas)  
+gcloud scheduler jobs create http etl-incremental \
+  --schedule="0 */4 * * *" \
+  --uri="${SERVICE_URL}/api/v1/scheduler/etl/incremental?days=1" \
+  --http-method=POST \
+  --oidc-service-account-email=scheduler-sa@${PROJECT_ID}.iam.gserviceaccount.com \
+  --location=${REGION} || echo "Job etl-incremental ya existe"
+
+echo "🎉 Deploy y configuración completados!"

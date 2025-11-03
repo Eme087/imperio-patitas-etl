@@ -1,55 +1,51 @@
 # app/db/models.py
-from sqlalchemy import Column, Integer, String, DECIMAL, DATETIME, ForeignKey
-from .base import Base # Importamos la Base declarativa
-from sqlalchemy.schema import UniqueConstraint
+# Este archivo ahora solo contiene las definiciones de esquemas para BigQuery
+# Ya no usamos SQLAlchemy porque todo va a BigQuery directamente
 
-class Cliente(Base):
-    __tablename__ = 'cliente'
-    id_bsale = Column(Integer, primary_key=True, index=True)
-    nombre = Column(String(255))
-    apellido = Column(String(255), nullable=True)
-    rut = Column(String(15), nullable=True, index=True) # Agregamos un índice a rut, es bueno para búsquedas
-    email = Column(String(255), nullable=True)
-    telefono = Column(String(50), nullable=True)
-    direccion = Column(String(500), nullable=True)
-    fecha_creacion = Column(DATETIME, nullable=True)
+# Tabla: cliente
+CLIENTE_SCHEMA = [
+    {'name': 'id_bsale', 'type': 'INTEGER', 'mode': 'REQUIRED'},
+    {'name': 'nombre', 'type': 'STRING', 'mode': 'NULLABLE'},
+    {'name': 'apellido', 'type': 'STRING', 'mode': 'NULLABLE'},
+    {'name': 'rut', 'type': 'STRING', 'mode': 'NULLABLE'},
+    {'name': 'email', 'type': 'STRING', 'mode': 'NULLABLE'},
+    {'name': 'telefono', 'type': 'STRING', 'mode': 'NULLABLE'},
+    {'name': 'direccion', 'type': 'STRING', 'mode': 'NULLABLE'},
+    {'name': 'fecha_creacion', 'type': 'DATETIME', 'mode': 'NULLABLE'},
+]
 
-class Producto(Base):
-    __tablename__ = 'producto'
-    id_bsale = Column(Integer, primary_key=True, index=True)
-    nombre = Column(String(255), nullable=False)
-    descripcion = Column(String(1000), nullable=True)
-    codigo_sku = Column(String(100), nullable=True, index=True)
-    codigo_barras = Column(String(100), nullable=True, index=True)
-    controla_stock = Column(Integer, comment="1 para verdadero, 0 para falso")
-    precio_neto = Column(DECIMAL(10, 2), nullable=True)
-    costo_neto = Column(DECIMAL(10, 2), nullable=True)
-    estado = Column(Integer, comment="1 para activo, 0 para inactivo")
+# Tabla: producto
+PRODUCTO_SCHEMA = [
+    {'name': 'id_bsale', 'type': 'INTEGER', 'mode': 'REQUIRED'},
+    {'name': 'nombre', 'type': 'STRING', 'mode': 'REQUIRED'},
+    {'name': 'descripcion', 'type': 'STRING', 'mode': 'NULLABLE'},
+    {'name': 'codigo_sku', 'type': 'STRING', 'mode': 'NULLABLE'},
+    {'name': 'codigo_barras', 'type': 'STRING', 'mode': 'NULLABLE'},
+    {'name': 'controla_stock', 'type': 'INTEGER', 'mode': 'NULLABLE'},
+    {'name': 'precio_neto', 'type': 'NUMERIC', 'mode': 'NULLABLE'},
+    {'name': 'costo_neto', 'type': 'NUMERIC', 'mode': 'NULLABLE'},
+    {'name': 'estado', 'type': 'INTEGER', 'mode': 'NULLABLE'},
+]
 
-class DocumentoVenta(Base):
-    __tablename__ = 'documento_venta'
-    id_bsale = Column(Integer, primary_key=True, index=True)
-    # IMPORTANTE: El cliente puede ser nulo en una venta
-    id_cliente = Column(Integer, ForeignKey('cliente.id_bsale'), nullable=True)
-    id_tipo_documento = Column(Integer)
-    folio = Column(Integer, index=True) # Agregamos un índice al folio
-    fecha_emision = Column(DATETIME, index=True) # La fecha de emisión es obligatoria
-    monto_neto = Column(DECIMAL(10, 2), nullable=True)
-    monto_iva = Column(DECIMAL(10, 2), nullable=True)
-    monto_total = Column(DECIMAL(10, 2), nullable=True)
+# Tabla: documento_venta
+DOCUMENTO_VENTA_SCHEMA = [
+    {'name': 'id_bsale', 'type': 'INTEGER', 'mode': 'REQUIRED'},
+    {'name': 'id_cliente', 'type': 'INTEGER', 'mode': 'NULLABLE'},
+    {'name': 'id_tipo_documento', 'type': 'INTEGER', 'mode': 'NULLABLE'},
+    {'name': 'folio', 'type': 'INTEGER', 'mode': 'NULLABLE'},
+    {'name': 'fecha_emision', 'type': 'DATETIME', 'mode': 'NULLABLE'},
+    {'name': 'monto_neto', 'type': 'NUMERIC', 'mode': 'NULLABLE'},
+    {'name': 'monto_iva', 'type': 'NUMERIC', 'mode': 'NULLABLE'},
+    {'name': 'monto_total', 'type': 'NUMERIC', 'mode': 'NULLABLE'},
+]
 
-class DetalleDocumento(Base):
-    __tablename__ = 'detalle_documento'
-    id_detalle = Column(Integer, primary_key=True, autoincrement=True)
-    id_documento = Column(Integer, ForeignKey('documento_venta.id_bsale'), index=True)
-    # IMPORTANTE: La variante podría ser nula
-    id_producto = Column(Integer, ForeignKey('producto.id_bsale'), nullable=True)
-    cantidad = Column(DECIMAL(10, 2))
-    precio_neto_unitario = Column(DECIMAL(10, 2))
-    # IMPORTANTE: El descuento puede no existir
-    descuento_porcentual = Column(DECIMAL(5, 2), nullable=True)
-    monto_total_linea = Column(DECIMAL(10, 2), nullable=True)
-
-    # Clave única para que el UPSERT funcione correctamente en el detalle.
-    # Un documento no debería tener el mismo producto más de una vez.
-    __table_args__ = (UniqueConstraint('id_documento', 'id_producto', name='_id_documento_producto_uc'),)
+# Tabla: detalle_documento
+DETALLE_DOCUMENTO_SCHEMA = [
+    {'name': 'id_detalle', 'type': 'INTEGER', 'mode': 'NULLABLE'},
+    {'name': 'id_documento', 'type': 'INTEGER', 'mode': 'REQUIRED'},
+    {'name': 'id_producto', 'type': 'INTEGER', 'mode': 'NULLABLE'},
+    {'name': 'cantidad', 'type': 'NUMERIC', 'mode': 'NULLABLE'},
+    {'name': 'precio_neto_unitario', 'type': 'NUMERIC', 'mode': 'NULLABLE'},
+    {'name': 'descuento_porcentual', 'type': 'NUMERIC', 'mode': 'NULLABLE'},
+    {'name': 'monto_total_linea', 'type': 'NUMERIC', 'mode': 'NULLABLE'},
+]
