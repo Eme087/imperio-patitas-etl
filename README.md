@@ -1,15 +1,15 @@
-# Servicio ETL para Imperio Patitas
+# Imperio Patitas ETL
 
-Este proyecto es un servicio de ETL (Extract, Transform, Load) construido con **FastAPI**. Su propósito es extraer datos de la API de **Bsale**, transformarlos y cargarlos de manera eficiente en una base de datos MySQL, optimizada para entornos como Google Cloud SQL.
+Este proyecto es un servicio ETL (Extract, Transform, Load) construido con **FastAPI**. Extrae datos de la API de **Bsale**, los transforma y los carga en **Google BigQuery** para análisis y reporting.
 
 ## Características
 
 - **API para Sincronización**: Expone endpoints RESTful para iniciar la sincronización de diferentes entidades.
 - **Arquitectura Modular**: El código está organizado por responsabilidades (`api`, `services`, `db`, `core`), facilitando su mantenimiento y escalabilidad.
-- **Configuración Segura**: Carga variables sensibles (como tokens de API y URLs de base de datos) desde un archivo `.env` usando Pydantic.
-- **ORM con SQLAlchemy**: Define los modelos de la base de datos y gestiona las sesiones de forma robusta.
-- **Carga de Datos Eficiente (UPSERT)**: Utiliza sentencias `INSERT ... ON DUPLICATE KEY UPDATE` para insertar o actualizar registros de forma atómica. Esto es crucial para mantener los datos sincronizados sin generar duplicados.
-- **Procesamiento por Lotes (Chunking)**: La sincronización de entidades grandes (como los documentos de venta) se realiza en lotes para optimizar el uso de memoria y asegurar la fiabilidad del proceso, haciendo commit a la base de datos después de cada lote.
+- **Configuración Segura**: Carga variables sensibles (como tokens de API y credenciales de GCP) desde un archivo `.env` usando Pydantic.
+- **Google BigQuery**: Almacena datos en BigQuery mediante inserción por streaming, optimizado para análisis a gran escala.
+- **Carga de Datos Eficiente**: Procesa y carga datos en tiempo real hacia BigQuery, manteniendo sincronización continua.
+- **Procesamiento por Lotes**: La sincronización se realiza en lotes para optimizar el uso de memoria y asegurar la fiabilidad del proceso.
 - **Cliente de API Centralizado**: Toda la comunicación con la API de Bsale se gestiona a través de un único cliente que maneja la autenticación y la paginación.
 - **Manejo de Dependencias**: Utiliza un archivo `requirements.txt` para una fácil instalación del entorno.
 
