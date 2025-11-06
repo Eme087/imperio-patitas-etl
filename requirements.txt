@@ -6,13 +6,9 @@ uvicorn[standard]
 pydantic
 pydantic-settings
 
-# ---- Base de Datos (Google BigQuery) ----
-google-cloud-bigquery # Cliente de BigQuery
-
-# ---- Cliente HTTP ----
+# ---- Base de Datos (solo BigQuery) ----
+# SQLAlchemy y PyMySQL removidos - solo usamos BigQuery
+google-cloud-bigquery>=3.10.0
 
 # ---- Cliente HTTP para la API de Bsale ----
 requests
-
-# Google BigQuery client (usado si se configura BIGQUERY_DATASET en el .env)
-google-cloud-bigquery>=3.10.0

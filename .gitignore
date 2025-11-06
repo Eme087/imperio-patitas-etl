@@ -47,3 +47,4 @@ logs.txt
 
 # Compiled python files
 *.pyc
+.env

@@ -1,36 +1,54 @@
 # app/api/endpoints.py
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
 from datetime import date
 from typing import Optional
 import logging
 
-from app.db.base import SessionLocal
 from app.core.config import settings
 from app.db.bigquery_client import get_bq_writer
 from app.services import etl_service
 
 router = APIRouter()
 
-# Inyección de dependencias para obtener la sesión de la base de datos.
+# Inyección de dependencias para obtener el writer de BigQuery
 def get_db():
-    # Marcador: inicio get_db
-    if settings.BIGQUERY_DATASET:
-        writer = get_bq_writer()
-        # Marcador: yield BigQuery writer
-        yield writer
-        # Marcador: fin get_db BigQuery
-    else:
-        db = SessionLocal()
-        try:
-            # Marcador: yield SQLAlchemy session
-            yield db
-        finally:
-            db.close()
-            # Marcador: fin get_db SQLAlchemy
+    writer = get_bq_writer()
+    yield writer
+
+@router.post("/etl/clean-and-reload", tags=["ETL"])
+def clean_and_reload(db=Depends(get_db)):
+    """
+    LIMPIA COMPLETAMENTE todas las tablas de BigQuery y recarga todos los datos desde cero.
+    ⚠️ CUIDADO: Esto elimina TODOS los datos existentes y los reemplaza.
+    """
+    try:
+        logging.info("🧹 INICIANDO LIMPIEZA COMPLETA Y RECARGA DE DATOS")
+        
+        # Limpiar todas las tablas
+        logging.info("Eliminando todos los datos de las tablas...")
+        db.query(f"DELETE FROM `{settings.BIGQUERY_PROJECT}.{settings.BIGQUERY_DATASET}.cliente` WHERE TRUE")
+        db.query(f"DELETE FROM `{settings.BIGQUERY_PROJECT}.{settings.BIGQUERY_DATASET}.producto` WHERE TRUE")
+        db.query(f"DELETE FROM `{settings.BIGQUERY_PROJECT}.{settings.BIGQUERY_DATASET}.documento_venta` WHERE TRUE")
+        db.query(f"DELETE FROM `{settings.BIGQUERY_PROJECT}.{settings.BIGQUERY_DATASET}.detalle_documento` WHERE TRUE")
+        
+        logging.info("✅ Tablas limpiadas. Iniciando recarga completa...")
+        
+        # Recargar todos los datos
+        etl_service.sync_clients(db)
+        etl_service.sync_products(db)
+        etl_service.sync_documents(db)
+        
+        return {
+            "status": "LIMPIEZA Y RECARGA COMPLETADA",
+            "message": "Todas las tablas fueron limpiadas y recargadas con datos frescos sin duplicados"
+        }
+        
+    except Exception as e:
+        logging.error(f"Error durante limpieza y recarga: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 @router.post("/etl/sync/{entity}", tags=["ETL"])
-def run_sync(entity: str, start_date: Optional[str] = None, db: Session = Depends(get_db)):
+def run_sync(entity: str, start_date: Optional[str] = None, db=Depends(get_db)):
     """
     Ejecuta la sincronización para una entidad específica.
     - Entidades válidas: 'clients', 'products', 'documents', 'all'.
