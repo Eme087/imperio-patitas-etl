@@ -6,8 +6,7 @@ uvicorn[standard]
 pydantic
 pydantic-settings
 
-# ---- Base de Datos (solo BigQuery) ----
-# SQLAlchemy y PyMySQL removidos - solo usamos BigQuery
+# ---- Base de Datos ----
 google-cloud-bigquery>=3.10.0
 
 # ---- Cliente HTTP para la API de Bsale ----

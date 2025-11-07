@@ -45,17 +45,14 @@ class ETLDataValidator:
             raise DataValidationError(f"Cliente inválido: {'; '.join(errors)}")
         
         return {
-            "id_bsale": client_data.get("id"),
+            "id_cliente": client_data.get("id"),
             "nombre": first_name,
             "apellido": (client_data.get("lastName") or "").strip() or None,
             "rut": rut or None,
             "email": email or None,
             "telefono": (client_data.get("phone") or "").strip() or None,
             "direccion": (client_data.get("address") or "").strip() or None,
-            "fecha_creacion": (
-                datetime.fromtimestamp(client_data.get("creationDate")).isoformat() 
-                if client_data.get("creationDate") is not None else None
-            ),
+            "fecha_creacion": client_data.get("creationDate"),  # Keep as Unix timestamp
         }
     
     @staticmethod
@@ -98,7 +95,7 @@ class ETLDataValidator:
             raise DataValidationError(f"Producto inválido: {'; '.join(errors)}")
         
         return {
-            "id_bsale": variant_id,
+            "id_producto": variant_id,
             "nombre": product_name,
             "descripcion": (product_data.get("description") or "").strip() or None,
             "codigo_sku": sku,
@@ -147,14 +144,11 @@ class ETLDataValidator:
             raise DataValidationError(f"Documento inválido: {'; '.join(errors)}")
         
         return {
-            "id_bsale": doc_id,
+            "id_documento": doc_id,
             "id_cliente": (document_data.get("client") or {}).get("id"),
             "id_tipo_documento": (document_data.get("documentType") or {}).get("id"),
             "folio": document_data.get("number"),
-            "fecha_emision": (
-                datetime.fromtimestamp(emission_date).isoformat() 
-                if emission_date is not None else None
-            ),
+            "fecha_emision": emission_date,  # Keep as Unix timestamp
             "monto_neto": float(net_amount),
             "monto_iva": float(tax_amount),
             "monto_total": float(total_amount),
@@ -164,6 +158,11 @@ class ETLDataValidator:
     def validate_document_detail(detail_data: Dict, doc_id: int) -> Dict:
         """Valida detalles de documento"""
         errors = []
+        
+        # ID de detalle requerido
+        detail_id = detail_data.get("id")
+        if not detail_id:
+            errors.append(f"Detalle documento {doc_id}: ID de detalle faltante")
         
         # Producto/variante requerido
         variant_id = (detail_data.get("variant") or {}).get("id")
@@ -192,6 +191,7 @@ class ETLDataValidator:
             raise DataValidationError(f"Detalle documento inválido: {'; '.join(errors)}")
         
         return {
+            "id_detalle": detail_id,
             "id_documento": doc_id,
             "id_producto": variant_id,
             "cantidad": float(quantity),
@@ -335,10 +335,10 @@ def _build_cliente_merge(rows):
         
         fecha_creacion = 'NULL'
         if row.get('fecha_creacion'):
-            fecha_creacion = f"TIMESTAMP('{row['fecha_creacion']}')"
+            fecha_creacion = f"TIMESTAMP_SECONDS({int(row['fecha_creacion'])})"
         
         values_list.append(f"""STRUCT(
-            {row.get('id_bsale')} AS id_bsale,
+            {row.get('id_cliente')} AS id_cliente,
             "{nombre}" AS nombre,
             "{apellido}" AS apellido,
             "{row.get('rut', '') or ''}" AS rut,
@@ -355,7 +355,7 @@ def _build_cliente_merge(rows):
             {','.join(values_list)}
         ])
     ) AS source
-    ON target.id_bsale = source.id_bsale
+    ON target.id_cliente = source.id_cliente
     WHEN MATCHED THEN 
         UPDATE SET 
             nombre = source.nombre,
@@ -363,11 +363,10 @@ def _build_cliente_merge(rows):
             rut = source.rut,
             email = source.email,
             telefono = source.telefono,
-            direccion = source.direccion,
-            fecha_creacion = COALESCE(source.fecha_creacion, target.fecha_creacion)
+            direccion = source.direccion
     WHEN NOT MATCHED THEN
-        INSERT (id_bsale, nombre, apellido, rut, email, telefono, direccion, fecha_creacion)
-        VALUES (source.id_bsale, source.nombre, source.apellido, source.rut, 
+        INSERT (id_cliente, nombre, apellido, rut, email, telefono, direccion, fecha_creacion)
+        VALUES (source.id_cliente, source.nombre, source.apellido, source.rut, 
                 source.email, source.telefono, source.direccion, source.fecha_creacion)
     """
 
@@ -380,7 +379,7 @@ def _build_producto_merge(rows):
         descripcion = str(row.get('descripcion', '') or '').replace('"', '\\"')
         
         values_list.append(f"""STRUCT(
-            {row.get('id_bsale')} AS id_bsale,
+            {row.get('id_producto')} AS id_producto,
             "{nombre}" AS nombre,
             "{descripcion}" AS descripcion,
             "{row.get('codigo_sku', '')}" AS codigo_sku,
@@ -398,7 +397,7 @@ def _build_producto_merge(rows):
             {','.join(values_list)}
         ])
     ) AS source
-    ON target.id_bsale = source.id_bsale
+    ON target.id_producto = source.id_producto
     WHEN MATCHED THEN 
         UPDATE SET 
             nombre = source.nombre,
@@ -410,12 +409,11 @@ def _build_producto_merge(rows):
             costo_neto = source.costo_neto,
             estado = source.estado
     WHEN NOT MATCHED THEN
-        INSERT (id_bsale, nombre, descripcion, codigo_sku, codigo_barras, 
-                controla_stock, precio_neto, costo_neto, estado, id_marca, 
-                id_tipo_producto, stock_disponible)
-        VALUES (source.id_bsale, source.nombre, source.descripcion, source.codigo_sku,
+        INSERT (id_producto, nombre, descripcion, codigo_sku, codigo_barras, 
+                controla_stock, precio_neto, costo_neto, estado)
+        VALUES (source.id_producto, source.nombre, source.descripcion, source.codigo_sku,
                 source.codigo_barras, source.controla_stock, source.precio_neto,
-                source.costo_neto, source.estado, NULL, NULL, NULL)
+                source.costo_neto, source.estado)
     """
 
 
@@ -425,10 +423,10 @@ def _build_documento_merge(rows):
     for row in rows:
         fecha_emision = 'NULL'
         if row.get('fecha_emision'):
-            fecha_emision = f"TIMESTAMP('{row['fecha_emision']}')"
+            fecha_emision = f"TIMESTAMP_SECONDS({int(row['fecha_emision'])})"
             
         values_list.append(f"""STRUCT(
-            {row.get('id_bsale')} AS id_bsale,
+            {row.get('id_documento')} AS id_documento,
             {row.get('id_cliente', 'NULL')} AS id_cliente,
             {row.get('id_tipo_documento', 'NULL')} AS id_tipo_documento,
             {row.get('folio', 'NULL')} AS folio,
@@ -445,7 +443,7 @@ def _build_documento_merge(rows):
             {','.join(values_list)}
         ])
     ) AS source
-    ON target.id_bsale = source.id_bsale
+    ON target.id_documento = source.id_documento
     WHEN MATCHED THEN 
         UPDATE SET 
             id_cliente = source.id_cliente,
@@ -453,9 +451,9 @@ def _build_documento_merge(rows):
             monto_iva = source.monto_iva,
             monto_total = source.monto_total
     WHEN NOT MATCHED THEN
-        INSERT (id_bsale, id_cliente, id_tipo_documento, folio, fecha_emision,
+        INSERT (id_documento, id_cliente, id_tipo_documento, folio, fecha_emision,
                 monto_neto, monto_iva, monto_total)
-        VALUES (source.id_bsale, source.id_cliente, source.id_tipo_documento, 
+        VALUES (source.id_documento, source.id_cliente, source.id_tipo_documento, 
                 source.folio, source.fecha_emision, source.monto_neto,
                 source.monto_iva, source.monto_total)
     """
@@ -466,6 +464,7 @@ def _build_detalle_merge(rows):
     values_list = []
     for row in rows:
         values_list.append(f"""STRUCT(
+            {row.get('id_detalle')} AS id_detalle,
             {row.get('id_documento')} AS id_documento,
             {row.get('id_producto')} AS id_producto,
             {float(row.get('cantidad', 0.0))} AS cantidad,
@@ -481,17 +480,19 @@ def _build_detalle_merge(rows):
             {','.join(values_list)}
         ])
     ) AS source
-    ON target.id_documento = source.id_documento AND target.id_producto = source.id_producto
+    ON target.id_detalle = source.id_detalle
     WHEN MATCHED THEN 
         UPDATE SET 
+            id_documento = source.id_documento,
+            id_producto = source.id_producto,
             cantidad = source.cantidad,
             precio_neto_unitario = source.precio_neto_unitario,
             descuento_porcentual = source.descuento_porcentual,
             monto_total_linea = source.monto_total_linea
     WHEN NOT MATCHED THEN
-        INSERT (id_documento, id_producto, cantidad, precio_neto_unitario,
+        INSERT (id_detalle, id_documento, id_producto, cantidad, precio_neto_unitario,
                 descuento_porcentual, monto_total_linea)
-        VALUES (source.id_documento, source.id_producto, source.cantidad,
+        VALUES (source.id_detalle, source.id_documento, source.id_producto, source.cantidad,
                 source.precio_neto_unitario, source.descuento_porcentual,
                 source.monto_total_linea)
     """
@@ -531,7 +532,7 @@ def sync_clients(db):
             return
 
         # Cargar clientes válidos a BigQuery
-        _bigquery_upsert_with_merge(db, "cliente", valid_clients, "id_bsale", "clientes")
+        _bigquery_upsert_with_merge(db, "cliente", valid_clients, "id_cliente", "clientes")
         logging.info(f"✅ Sincronización de Clientes finalizada (BigQuery). {len(valid_clients)} registros válidos procesados.")
         
     except Exception as e:
@@ -631,7 +632,7 @@ def sync_products(db):
             raise Exception("No hay productos válidos - revisar precios y costos en Bsale")
 
         # Cargar productos válidos a BigQuery
-        _bigquery_upsert_with_merge(db, "producto", valid_products, "id_bsale", "productos")
+        _bigquery_upsert_with_merge(db, "producto", valid_products, "id_producto", "productos")
         logging.info(f"✅ Sincronización de Productos finalizada (BigQuery). {len(valid_products)} registros válidos procesados.")
         
     except Exception as e:
@@ -698,10 +699,10 @@ def sync_documents(db, start_date: str = None):
 
         # CARGAR CON UPSERT EN BIGQUERY EN UNA SOLA OPERACIÓN ATÓMICA
         if valid_documents:
-            _bigquery_upsert_with_merge(db, "documento_venta", valid_documents, "id_bsale", "documentos")
+            _bigquery_upsert_with_merge(db, "documento_venta", valid_documents, "id_documento", "documentos")
         
         if valid_details:
-            _bigquery_upsert_with_merge(db, "detalle_documento", valid_details, "id_documento", "detalles documentos")
+            _bigquery_upsert_with_merge(db, "detalle_documento", valid_details, "id_detalle", "detalles documentos")
 
         logging.info(f"✅ Sincronización de Documentos finalizada. {len(valid_documents)} documentos y {len(valid_details)} detalles válidos procesados.")
         

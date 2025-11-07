@@ -76,67 +76,55 @@ class BigQueryWriter:
         """Create all required tables for the ETL if they don't exist."""
         from google.cloud.bigquery import SchemaField
         
-        # Schema for cliente table
+        # Schema for cliente table - aligned with ETL output
         cliente_schema = [
-            SchemaField("id", "INTEGER", mode="REQUIRED"),
-            SchemaField("codigo", "STRING"),
-            SchemaField("razon_social", "STRING"),
-            SchemaField("nombre_fantasia", "STRING"),
+            SchemaField("id_cliente", "INTEGER", mode="REQUIRED"),
+            SchemaField("nombre", "STRING"),
+            SchemaField("apellido", "STRING"),
             SchemaField("rut", "STRING"),
-            SchemaField("giro", "STRING"),
-            SchemaField("direccion", "STRING"),
-            SchemaField("comuna", "STRING"),
-            SchemaField("ciudad", "STRING"),
             SchemaField("email", "STRING"),
             SchemaField("telefono", "STRING"),
-            SchemaField("celular", "STRING"),
-            SchemaField("estado", "INTEGER"),
+            SchemaField("direccion", "STRING"),
             SchemaField("fecha_creacion", "TIMESTAMP"),
-            SchemaField("fecha_actualizacion", "TIMESTAMP"),
         ]
         
-        # Schema for producto table
+        # Schema for producto table - aligned with ETL output
         producto_schema = [
-            SchemaField("id", "INTEGER", mode="REQUIRED"),
+            SchemaField("id_producto", "INTEGER", mode="REQUIRED"),
             SchemaField("nombre", "STRING"),
             SchemaField("descripcion", "STRING"),
-            SchemaField("clasificacion", "STRING"),
-            SchemaField("precio", "FLOAT"),
-            SchemaField("precio_costo", "FLOAT"),
-            SchemaField("codigo_barra", "STRING"),
+            SchemaField("codigo_sku", "STRING"),
+            SchemaField("codigo_barras", "STRING"),
+            SchemaField("controla_stock", "INTEGER"),
+            SchemaField("precio_neto", "FLOAT"),
+            SchemaField("costo_neto", "FLOAT"),
             SchemaField("estado", "INTEGER"),
             SchemaField("fecha_creacion", "TIMESTAMP"),
-            SchemaField("fecha_actualizacion", "TIMESTAMP"),
         ]
         
-        # Schema for documento_venta table
+        # Schema for documento_venta table - aligned with ETL output
         documento_schema = [
-            SchemaField("id", "INTEGER", mode="REQUIRED"),
-            SchemaField("numero", "INTEGER"),
-            SchemaField("tipo_documento", "STRING"),
-            SchemaField("cliente_id", "INTEGER"),
-            SchemaField("fecha_emision", "DATE"),
-            SchemaField("fecha_vencimiento", "DATE"),
-            SchemaField("subtotal", "FLOAT"),
-            SchemaField("impuesto", "FLOAT"),
-            SchemaField("descuento", "FLOAT"),
-            SchemaField("total", "FLOAT"),
-            SchemaField("estado", "INTEGER"),
+            SchemaField("id_documento", "INTEGER", mode="REQUIRED"),
+            SchemaField("id_cliente", "INTEGER"),
+            SchemaField("id_tipo_documento", "INTEGER"),
+            SchemaField("folio", "INTEGER"),
+            SchemaField("fecha_emision", "TIMESTAMP"),
+            SchemaField("monto_neto", "FLOAT"),
+            SchemaField("monto_iva", "FLOAT"),
+            SchemaField("monto_total", "FLOAT"),
             SchemaField("fecha_creacion", "TIMESTAMP"),
-            SchemaField("fecha_actualizacion", "TIMESTAMP"),
         ]
         
-        # Schema for detalle_documento table
+        # Schema for detalle_documento table - aligned with ETL output
         detalle_schema = [
-            SchemaField("id", "INTEGER", mode="REQUIRED"),
-            SchemaField("documento_id", "INTEGER"),
-            SchemaField("producto_id", "INTEGER"),
+            SchemaField("id_detalle", "INTEGER", mode="REQUIRED"),
+            SchemaField("id_documento", "INTEGER"),
+            SchemaField("id_producto", "INTEGER"),
             SchemaField("cantidad", "FLOAT"),
-            SchemaField("precio_unitario", "FLOAT"),
-            SchemaField("descuento", "FLOAT"),
-            SchemaField("subtotal", "FLOAT"),
+            SchemaField("precio_neto_unitario", "FLOAT"),
+            SchemaField("descuento_porcentual", "FLOAT"),
+            SchemaField("monto_total_linea", "FLOAT"),
             SchemaField("fecha_creacion", "TIMESTAMP"),
-            SchemaField("fecha_actualizacion", "TIMESTAMP"),
         ]
         
         self.ensure_table_exists("cliente", cliente_schema)
