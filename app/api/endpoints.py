@@ -56,28 +56,49 @@ def run_sync(entity: str, start_date: Optional[str] = None, db=Depends(get_db)):
     """
     try:
         logging.info(f"Marcador: inicio run_sync para entidad '{entity}'")
+        
+        # Diccionario para almacenar los datos sincronizados
+        synced_data = {}
+        
         if entity == "all":
             logging.info("Marcador: sync_clients")
-            etl_service.sync_clients(db)
+            clients = etl_service.sync_clients(db)
+            synced_data['cliente'] = clients or []
+            
             logging.info("Marcador: sync_products")
-            etl_service.sync_products(db)
+            products = etl_service.sync_products(db)
+            synced_data['producto'] = products or []
+            
             if hasattr(db, "commit"):
                 db.commit()
             logging.info("Marcador: sync_documents")
-            etl_service.sync_documents(db, start_date=start_date)
+            docs_data = etl_service.sync_documents(db, start_date=start_date)
+            if docs_data:
+                synced_data.update(docs_data)
+            
+            # Sincronizar a Google Sheets
+            etl_service.sync_all_to_sheets(synced_data)
+            
         elif entity == "clients":
             logging.info("Marcador: sync_clients")
-            etl_service.sync_clients(db)
+            clients = etl_service.sync_clients(db)
+            synced_data['cliente'] = clients or []
+            etl_service.sync_all_to_sheets(synced_data)
             if hasattr(db, "commit"):
                 db.commit()
         elif entity == "products":
             logging.info("Marcador: sync_products")
-            etl_service.sync_products(db)
+            products = etl_service.sync_products(db)
+            synced_data['producto'] = products or []
+            etl_service.sync_all_to_sheets(synced_data)
             if hasattr(db, "commit"):
                 db.commit()
         elif entity == "documents":
             logging.info("Marcador: sync_documents")
-            etl_service.sync_documents(db, start_date=start_date)
+            docs_data = etl_service.sync_documents(db, start_date=start_date)
+            if docs_data:
+                synced_data.update(docs_data)
+            etl_service.sync_all_to_sheets(synced_data)
         else:
             logging.error(f"Marcador: entidad '{entity}' no encontrada")
             raise HTTPException(status_code=404, detail=f"Entidad '{entity}' no encontrada.")

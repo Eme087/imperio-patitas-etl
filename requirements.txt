@@ -11,3 +11,5 @@ google-cloud-bigquery>=3.10.0
 
 # ---- Cliente HTTP para la API de Bsale ----
 requests
+gspread>=5.12.0
+google-auth>=2.22.0

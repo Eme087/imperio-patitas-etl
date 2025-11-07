@@ -529,11 +529,13 @@ def sync_clients(db):
         
         if not valid_clients:
             logging.warning("⚠️ No hay clientes válidos para cargar.")
-            return
+            return []
 
         # Cargar clientes válidos a BigQuery
         _bigquery_upsert_with_merge(db, "cliente", valid_clients, "id_cliente", "clientes")
         logging.info(f"✅ Sincronización de Clientes finalizada (BigQuery). {len(valid_clients)} registros válidos procesados.")
+        
+        return valid_clients
         
     except Exception as e:
         logging.error(f"🔴 ERROR CRÍTICO en sync_clients: {e}")
@@ -635,6 +637,8 @@ def sync_products(db):
         _bigquery_upsert_with_merge(db, "producto", valid_products, "id_producto", "productos")
         logging.info(f"✅ Sincronización de Productos finalizada (BigQuery). {len(valid_products)} registros válidos procesados.")
         
+        return valid_products
+        
     except Exception as e:
         logging.error(f"🔴 ERROR CRÍTICO en sync_products: {e}")
         raise
@@ -695,7 +699,7 @@ def sync_documents(db, start_date: str = None):
 
         if not valid_documents:
             logging.warning("⚠️ No hay documentos válidos para cargar.")
-            return
+            return {'documento_venta': [], 'detalle_documento': []}
 
         # CARGAR CON UPSERT EN BIGQUERY EN UNA SOLA OPERACIÓN ATÓMICA
         if valid_documents:
@@ -706,6 +710,28 @@ def sync_documents(db, start_date: str = None):
 
         logging.info(f"✅ Sincronización de Documentos finalizada. {len(valid_documents)} documentos y {len(valid_details)} detalles válidos procesados.")
         
+        return {'documento_venta': valid_documents, 'detalle_documento': valid_details}
+        
     except Exception as e:
         logging.error(f"🔴 ERROR CRÍTICO en sync_documents: {e}")
         raise
+
+
+def sync_all_to_sheets(data_dict: dict):
+    """
+    Sincroniza todos los datos validados a Google Sheets (si está configurado).
+    data_dict: {'cliente': [...], 'producto': [...], 'documento_venta': [...], 'detalle_documento': [...]}
+    """
+    from app.db.sheets_sync import get_sheets_sync
+    
+    sheets_sync = get_sheets_sync()
+    if not sheets_sync:
+        logging.info("📋 Google Sheets no configurado, omitiendo sincronización.")
+        return
+    
+    try:
+        sheets_sync.sync_all(data_dict)
+    except Exception as e:
+        logging.error(f"🔴 Error sincronizando a Google Sheets: {e}")
+        # No levantamos la excepción para que no falle toda la sincronización
+

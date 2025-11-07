@@ -8,6 +8,9 @@ class Settings(BaseSettings):
     # BigQuery es obligatorio ahora
     BIGQUERY_PROJECT: str
     BIGQUERY_DATASET: str
+    # Google Sheets (opcional)
+    GOOGLE_SHEETS_DOC_ID: Optional[str] = None
+    GOOGLE_SHEETS_CREDENTIALS: Optional[str] = None
 
     class Config:
         env_file = ".env"
