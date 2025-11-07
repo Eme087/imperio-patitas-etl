@@ -250,32 +250,47 @@ def _execute_bigquery_query(db, query: str, description: str = "Query"):
 
 
 def _bigquery_upsert_with_merge(db, table_name: str, rows: list, merge_key: str, description: str):
-    """UPSERT genérico usando MERGE para BigQuery"""
+    """UPSERT genérico usando MERGE para BigQuery - PROCESA EN LOTES"""
     if not rows:
         logging.info(f"ℹ️ No hay datos válidos para {description}")
         return
         
     logging.info(f"🔄 Ejecutando UPSERT de {len(rows)} registros válidos en {table_name}...")
     
-    # Construir MERGE query según la tabla
-    if table_name == "cliente":
-        merge_query = _build_cliente_merge(rows)
-    elif table_name == "producto":
-        merge_query = _build_producto_merge(rows)
-    elif table_name == "documento_venta":
-        merge_query = _build_documento_merge(rows)
-    elif table_name == "detalle_documento":
-        merge_query = _build_detalle_merge(rows)
-    else:
-        raise ValueError(f"Tabla no soportada para MERGE: {table_name}")
+    # Procesar en lotes de 50 para evitar queries demasiado grandes
+    BATCH_SIZE = 50
+    total_processed = 0
     
-    # Intentar MERGE, si falla usar DELETE+INSERT
-    try:
-        _execute_bigquery_query(db, merge_query, f"MERGE {table_name}")
-        logging.info(f"✅ UPSERT completado para {len(rows)} registros en {table_name}")
-    except Exception as e:
-        logging.warning(f"⚠️ MERGE falló para {table_name}, intentando DELETE+INSERT: {e}")
-        _bigquery_delete_and_insert(db, table_name, rows, merge_key, description)
+    for i in range(0, len(rows), BATCH_SIZE):
+        batch = rows[i:i+BATCH_SIZE]
+        batch_num = (i // BATCH_SIZE) + 1
+        total_batches = (len(rows) + BATCH_SIZE - 1) // BATCH_SIZE
+        
+        logging.info(f"📦 Procesando lote {batch_num}/{total_batches} ({len(batch)} registros)...")
+        
+        # Construir MERGE query según la tabla
+        if table_name == "cliente":
+            merge_query = _build_cliente_merge(batch)
+        elif table_name == "producto":
+            merge_query = _build_producto_merge(batch)
+        elif table_name == "documento_venta":
+            merge_query = _build_documento_merge(batch)
+        elif table_name == "detalle_documento":
+            merge_query = _build_detalle_merge(batch)
+        else:
+            raise ValueError(f"Tabla no soportada para MERGE: {table_name}")
+        
+        # Intentar MERGE, si falla usar DELETE+INSERT
+        try:
+            _execute_bigquery_query(db, merge_query, f"MERGE {table_name} lote {batch_num}")
+            total_processed += len(batch)
+            logging.info(f"✅ Lote {batch_num} completado ({total_processed}/{len(rows)} total)")
+        except Exception as e:
+            logging.warning(f"⚠️ MERGE falló para lote {batch_num}, intentando DELETE+INSERT: {e}")
+            _bigquery_delete_and_insert(db, table_name, batch, merge_key, f"{description} lote {batch_num}")
+            total_processed += len(batch)
+    
+    logging.info(f"✅ UPSERT completado: {total_processed} registros procesados en {table_name}")
 
 
 def _bigquery_delete_and_insert(db, table_name: str, rows: list, key_field: str, description: str):
