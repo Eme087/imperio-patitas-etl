@@ -501,6 +501,9 @@ def sync_clients(db):
     """Sincronización de clientes con VALIDACIÓN ESTRICTA"""
     logging.info("👥 Iniciando sincronización de Clientes con validación estricta...")
     
+    # Ensure tables exist before syncing
+    db.ensure_all_tables()
+    
     try:
         clients_list = bsale_client.get_clients()
         if not clients_list:
@@ -539,6 +542,9 @@ def sync_clients(db):
 def sync_products(db):
     """Sincronización de productos con VALIDACIÓN ESTRICTA DE PRECIOS Y COSTOS"""
     logging.info("📦 Iniciando sincronización de Productos con validación estricta...")
+    
+    # Ensure tables exist before syncing
+    db.ensure_all_tables()
     
     try:
         products_list = bsale_client._get_all_pages("products.json", params={'expand': '[variants.costs]'})
@@ -636,6 +642,9 @@ def sync_products(db):
 def sync_documents(db, start_date: str = None):
     """Sincronización de documentos con VALIDACIÓN ESTRICTA"""
     logging.info(f"📄 Iniciando sincronización de Documentos con validación estricta (desde {start_date or 'el inicio'})...")
+    
+    # Ensure tables exist before syncing
+    db.ensure_all_tables()
     
     try:
         documents_list = bsale_client.get_documents(start_date=start_date)
