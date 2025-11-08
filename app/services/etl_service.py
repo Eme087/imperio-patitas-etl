@@ -424,12 +424,17 @@ def _build_documento_merge(rows):
         fecha_emision = 'NULL'
         if row.get('fecha_emision'):
             fecha_emision = f"TIMESTAMP_SECONDS({int(row['fecha_emision'])})"
-            
+        
+        # Manejar valores NULL correctamente
+        id_cliente = row.get('id_cliente')
+        id_tipo_documento = row.get('id_tipo_documento')
+        folio = row.get('folio')
+        
         values_list.append(f"""STRUCT(
             {row.get('id_documento')} AS id_documento,
-            {row.get('id_cliente', 'NULL')} AS id_cliente,
-            {row.get('id_tipo_documento', 'NULL')} AS id_tipo_documento,
-            {row.get('folio', 'NULL')} AS folio,
+            {id_cliente if id_cliente is not None else 'NULL'} AS id_cliente,
+            {id_tipo_documento if id_tipo_documento is not None else 'NULL'} AS id_tipo_documento,
+            {folio if folio is not None else 'NULL'} AS folio,
             {fecha_emision} AS fecha_emision,
             {float(row.get('monto_neto', 0.0))} AS monto_neto,
             {float(row.get('monto_iva', 0.0))} AS monto_iva,
